@@ -75,7 +75,9 @@
 
       <div class="flex flex-col items-center justify-content-center">
         <span>oder</span>
-        <router-link :to="'login'" class="text-lightBlue-600">Einloggen</router-link>
+        <router-link :to="'login'" class="text-lightBlue-600"
+          >Einloggen</router-link
+        >
       </div>
     </form>
   </div>
@@ -84,6 +86,7 @@
 <script lang="ts">
 import { AxiosError } from "axios";
 import { defineComponent } from "vue";
+import { useToast } from "vue-toastification";
 import Loading from "@/components/Loading.vue";
 import ErrorRenderer from "@/components/ErrorRenderer.vue";
 import AuthService from "../services/AuthService";
@@ -101,16 +104,20 @@ type RegisterState = {
 
 export default defineComponent({
   components: { Loading, ErrorRenderer },
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data: (): RegisterState => ({
     // state
     errors: [],
     loading: false,
 
     // form state
-    password: "111111",
-    name: "Sean Moghadam",
-    passwordConfirmation: "111111",
-    email: "mogahdam@live.at",
+    password: "",
+    name: "",
+    passwordConfirmation: "",
+    email: "",
   }),
   methods: {
     async submitRegister(event: Event): Promise<void> {
@@ -127,7 +134,9 @@ export default defineComponent({
           this.name
         );
         if (token) {
-          // this.$toast.success("I'm an info toast!");
+          this.toast.success("Registrierung erfolgreich!", {
+            timeout: 2000,
+          });
           this.$router.push("login");
         }
       } catch (e) {

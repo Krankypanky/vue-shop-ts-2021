@@ -59,6 +59,7 @@
 <script lang="ts">
 import { AxiosError } from "axios";
 import { defineComponent } from "vue";
+import { useToast } from "vue-toastification";
 import Loading from "@/components/Loading.vue";
 import ErrorRenderer from "@/components/ErrorRenderer.vue";
 import AuthService from "../services/AuthService";
@@ -73,6 +74,10 @@ type LoginState = {
 
 export default defineComponent({
   components: { Loading, ErrorRenderer },
+  setup() {
+    const toast = useToast();
+    return { toast };
+  },
   data: (): LoginState => ({
     errors: [],
     email: "",
@@ -85,11 +90,10 @@ export default defineComponent({
       this.loading = true;
       this.errors = [];
       try {
-        await AuthService.login(
-          this.$config.apiUrl,
-          this.email,
-          this.password
-        );
+        await AuthService.login(this.$config.apiUrl, this.email, this.password);
+         this.toast.success("Login erfolgreich!", {
+            timeout: 2000,
+          });
         this.$router.push("/");
       } catch (e) {
         this.errors = errorFormatter(e as AxiosError);
