@@ -19,9 +19,11 @@ use Illuminate\Support\Facades\Route;
 // public routes
 Route::post('/login', [ApiAuthController::class, 'login'])->name('login.api');
 Route::post('/register', [ApiAuthController::class, 'register'])->name('register.api');
-    
+
+Route::get('/books', [BookController::class, "index"])->name('books.api');
+
 
 Route::middleware('auth:api')->group(function () {
     // our routes to be protected will go in here
-    Route::get('/books', [BookController::class, "index"])->name('books.api');
+    
 });
