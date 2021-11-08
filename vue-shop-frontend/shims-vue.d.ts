@@ -1,3 +1,4 @@
+import { AppStore } from '@/types/store.type';
 import { ToastInterface } from 'vue-toastification';
 import { Store } from 'vuex';
 
@@ -10,7 +11,7 @@ declare module '*.vue' {
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    $store: Store<T>;
+    $store: Store<AppStore>;
     $config: Record<string, any>;
   }
 }

@@ -10,4 +10,5 @@ export type Book = {
     description: string;
     website: string;
     price: number;
+    image: string;
 };

@@ -1,7 +1,7 @@
 <template>
   <div id="BookListingPage" class="max-w-xl m-auto">
     <h1 class="text-xl">Bücher Liste</h1>
-    <loading></loading>
+    <loading :loading="loading"></loading>
     <ul class="flex flex-row flex-wrap">
       <li
         v-for="book in books"
@@ -52,49 +52,29 @@
 </template>
 
 <script lang="ts">
-import { AxiosError } from "axios";
 import { defineComponent } from "vue";
 import Loading from "@/components/Loading.vue";
 import ErrorRenderer from "@/components/ErrorRenderer.vue";
 import { Book } from "../types/book.type";
-import BookService from "../services/BookService";
-import errorFormatter from "../helpers/error-formatter";
-
-type BookListingState = {
-  books: Book[];
-  errors: string[];
-  loading: boolean;
-};
 
 const BookListing = defineComponent({
   components: { Loading, ErrorRenderer },
-  data: (): BookListingState => ({
-    // app specific state
-    errors: [],
-    loading: false,
-
-    // content specific state
-    books: [] as Book[],
-  }),
+  computed: {
+    loading() {
+      return this.$store.state.loading;
+    },
+    errors() {
+      return this.$store.state.errors;
+    },
+    books() {
+      return this.$store.state.books;
+    },
+  },
   // on mount -> fetch books
-  async beforeMount(): Promise<void> {
-    await this.getBooks();
+  async mounted(): Promise<void> {
+    this.$store.dispatch('getBooks', { apiUrl: this.$config.apiUrl });
   },
   methods: {
-    // method fetch books
-    async getBooks(): Promise<void> {
-      this.loading = true;
-      this.errors = [];
-      try {
-        this.books = await BookService.getBooks(this.$config.apiUrl);
-      } catch (e: unknown) {
-        if ((e as AxiosError).code === "401") {
-          this.$router.push("/login");
-        }
-        this.errors = errorFormatter(e as AxiosError);
-      }
-      this.loading = false;
-    },
     addBookToCart(book: Book): void {
       this.$store.commit("addBookToCart", book);
     },

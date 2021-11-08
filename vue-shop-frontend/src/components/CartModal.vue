@@ -129,7 +129,6 @@
 import { mapState } from "vuex";
 import { defineComponent } from "vue";
 import { AppStore } from "@/types/store.type";
-import store from "../store";
 
 type CartModalState = {
   cartOpen: boolean;

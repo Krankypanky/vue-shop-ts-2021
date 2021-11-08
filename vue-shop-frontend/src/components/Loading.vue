@@ -11,7 +11,7 @@
       top-0
       flex
       justify-center
-      items-center
+      items-center z-50
     "
     >Loading...
   </span>
