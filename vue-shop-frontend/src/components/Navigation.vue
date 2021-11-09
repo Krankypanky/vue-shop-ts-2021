@@ -57,6 +57,23 @@
           </li>
         </router-link>
       </div>
+      <input
+        type="text"
+        v-on:input="searchChanged"
+        v-model="searchTerm"
+        class="
+          shadow
+          appearance-none
+          border
+          rounded
+          w-full
+          py-1
+          pl-3
+          text-gray-700
+          leading-tight
+          focus:outline-none focus:shadow-outline
+        "
+      />
       <cart-modal :is-logged-in="isLoggedIn"></cart-modal>
       <button
         class="
@@ -85,12 +102,14 @@ import AuthService from "@/services/AuthService";
 
 type NavigationState = {
   isLoggedIn: boolean;
+  searchTerm: string;
 };
 
 export default defineComponent({
   components: { CartModal },
   data: (): NavigationState => ({
     isLoggedIn: AuthService.isLoggedIn(),
+    searchTerm: "",
   }),
   methods: {
     logout(): void {
@@ -99,6 +118,11 @@ export default defineComponent({
     },
     setupData(): void {
       this.isLoggedIn = AuthService.isLoggedIn();
+    },
+    searchChanged(evt: Event) {
+      console.log("triggered");
+      const value = (evt?.target as HTMLInputElement).value ?? "";
+      this.$emit("searchChanged", value);
     },
   },
   watch: {

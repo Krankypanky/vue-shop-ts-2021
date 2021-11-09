@@ -1,6 +1,8 @@
 <template>
-  <div id="BookListingPage" class="max-w-xl m-auto">
-    <h1 class="text-xl">Bücher Liste</h1>
+  <navigation v-on:searchChanged="searchChanged"></navigation>
+
+  <div id="BookListingPage" class="max-w-xl m-auto mt-5">
+    <h1 class="text-xl mb-3">Bücher Liste</h1>
     <loading :loading="loading"></loading>
     <ul class="flex flex-row flex-wrap">
       <li
@@ -17,7 +19,7 @@
           lg:w-1/4
         "
       >
-        <h2 class="truncate">{{ book.title }}</h2>
+        <h2 class="truncate" :title="book.title">{{ book.title }}</h2>
         <div class="flex justify-between">
           <div class="relative">
             <img
@@ -55,10 +57,14 @@
 import { defineComponent } from "vue";
 import Loading from "@/components/Loading.vue";
 import ErrorRenderer from "@/components/ErrorRenderer.vue";
+import Navigation from "@/components/Navigation.vue";
 import { Book } from "../types/book.type";
 
 const BookListing = defineComponent({
-  components: { Loading, ErrorRenderer },
+  components: { Loading, ErrorRenderer, Navigation },
+  data: () => ({
+    searchTerm: "",
+  }),
   computed: {
     loading() {
       return this.$store.state.loading;
@@ -67,16 +73,23 @@ const BookListing = defineComponent({
       return this.$store.state.errors;
     },
     books() {
-      return this.$store.state.books;
+      return this.$store.state.books.filter(
+        (book) =>
+          book.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+          book.description.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
     },
   },
   // on mount -> fetch books
   async mounted(): Promise<void> {
-    this.$store.dispatch('getBooks', { apiUrl: this.$config.apiUrl });
+    this.$store.dispatch("getBooks", { apiUrl: this.$config.apiUrl });
   },
   methods: {
     addBookToCart(book: Book): void {
       this.$store.commit("addBookToCart", book);
+    },
+    searchChanged(searchValue: string) {
+      this.searchTerm = searchValue;
     },
   },
 });

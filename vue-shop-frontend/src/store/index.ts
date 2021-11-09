@@ -1,10 +1,10 @@
+import { createStore } from 'vuex';
+import { AxiosError } from 'axios';
+import BookService from '../services/BookService';
+import router from '../router';
+import errorFormatter from '@/helpers/error-formatter';
 import { Book } from '@/types/book.type';
 import { AppStore } from '@/types/store.type';
-import { createStore } from 'vuex';
-import BookService from '../services/BookService';
-import router from '../router'
-import { AxiosError } from 'axios';
-import errorFormatter from '@/helpers/error-formatter';
 
 const defaultState: AppStore = {
   books: [],
@@ -46,7 +46,7 @@ export default createStore({
       } catch (e: unknown) {
         if ((e as AxiosError).code === "401") {
           router.push("/login");
-          return
+          return;
         }
         commit("setErrors", errorFormatter(e as AxiosError));
       }
