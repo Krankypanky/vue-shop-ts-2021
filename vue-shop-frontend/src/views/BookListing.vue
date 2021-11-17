@@ -1,5 +1,5 @@
 <template>
-  <!-- <navigation v-on:searchChanged="searchChanged"></navigation> -->
+  <navigation v-on:searchChanged="searchChanged"></navigation>
   <div id="BookListingPage" class="max-w-xl m-auto mt-5">
     <h1 class="text-xl mb-3">Bücher Liste</h1>
     <loading :loading="loading"></loading>
@@ -48,7 +48,7 @@
         </div>
       </li>
     </ul>
-    <error-renderer></error-renderer>
+    <error-renderer :errors="errors"></error-renderer>
   </div>
 </template>
 
@@ -56,40 +56,69 @@
 import { Book } from "@/types/book.type";
 import ErrorRenderer from "@/components/ErrorRenderer.vue";
 import BookService from "@/services/BookService";
+import Navigation from "@/components/Navigation.vue";
+import Loading from "@/components/Loading.vue";
 import errorFormatter from "@/helpers/error-formatter";
 import { defineComponent } from "vue";
 import { AxiosError } from "axios";
 
+const filterBooks = (book: Book, searchTerm: string) => {
+  return (
+    book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    book.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+};
+
 type BookListingState = {
   errors: string[];
   loading: boolean;
-  books: Book[];
+  allBooks: Book[];
+  searchTerm: string;
+  cart: Book[];
 };
 
 const BookListing = defineComponent({
   components: {
     ErrorRenderer,
+    Navigation,
+    Loading,
   },
   data: (): BookListingState => ({
     loading: false,
     errors: [],
-
-    books: [],
+    allBooks: [],
+    searchTerm: "",
+    cart: [],
   }),
+  computed: {
+    books(): Book[] {
+      return this.allBooks.filter((book) => filterBooks(book, this.searchTerm));
+    },
+  },
   methods: {
     addBookToCart(book: Book): void {
-      console.log(book);
+        this.cart = [...this.cart, book];
+    },
+
+    // work with the index
+    removeBookFromCart(index: number): void {
+      console.log(index);
     },
 
     async getBooks(): Promise<void> {
       this.loading = true;
       this.errors = [];
       try {
-        this.books = await BookService.getBooks("http://localhost/api");
+        this.allBooks = await BookService.getBooks("http://localhost/api");
       } catch (e) {
         this.errors = errorFormatter(e as AxiosError);
       }
       this.loading = false;
+    },
+
+    searchChanged(searchTerm: string) {
+      this.searchTerm = searchTerm;
+      console.log(searchTerm);
     },
   },
   async beforeMount() {
