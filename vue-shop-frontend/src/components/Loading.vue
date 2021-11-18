@@ -2,17 +2,17 @@
   <span
     v-if="loading"
     class="
-      bg-white
-      text-black
-      h-screen
-      w-screen
       absolute
-      left-0
       top-0
-      flex
-      justify-center
-      items-center
+      left-0
       z-50
+      flex
+      items-center
+      justify-center
+      w-screen
+      h-screen
+      text-black
+      bg-white
     "
     >Loading...
   </span>

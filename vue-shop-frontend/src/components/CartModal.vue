@@ -2,24 +2,24 @@
   <div>
     <button
       class="
-        bg-green-500
-        hover:red-700
-        text-white
-        font-bold
-        py-1
-        px-4
-        rounded
-        mx-4
         relative
+        px-4
+        py-1
+        mx-4
+        font-bold
+        text-white
+        bg-green-500
+        rounded
+        hover:red-700
       "
-      @click="openCart"
+      v-on:click="openCart"
     >
       Warenkorb
       <span
         class="
+          absolute
           px-1
           text-xs
-          absolute
           bg-blue-400
           border-black
           rounded-full
@@ -30,7 +30,7 @@
       >
     </button>
     <div
-      class="fixed z-10 inset-0 overflow-y-auto display-none"
+      class="fixed inset-0 z-10 overflow-y-auto display-none"
       aria-labelledby="modal-title"
       role="dialog"
       aria-modal="true"
@@ -42,15 +42,15 @@
           items-end
           justify-center
           min-h-screen
-          pt-4
           px-4
+          pt-4
           pb-20
           text-center
           sm:block sm:p-0
         "
       >
         <div
-          class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
           aria-hidden="true"
         ></div>
         <span
@@ -61,27 +61,27 @@
 
         <div
           class="
+            relative
             inline-block
+            overflow-hidden
+            text-left
             align-bottom
+            transition-all
+            transform
             bg-white
             rounded-sm
-            text-left
-            overflow-hidden
             shadow-xl
-            transform
-            transition-all
             sm:my-8 sm:align-middle sm:max-w-lg sm:w-full
-            relative
           "
         >
           <button
-            class="absolute right-2 top-0 text-black p-2"
-            @click="closeCart"
+            class="absolute top-0 p-2 text-black right-2"
+            v-on:click="closeCart"
           >
             x
           </button>
 
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 text-black">
+          <div class="px-4 pt-5 pb-4 text-black bg-white sm:p-6 sm:pb-4">
             <h3>Warenkorb</h3>
             <hr />
             <p v-if="!cart?.length" class="mt-2">
@@ -91,7 +91,7 @@
               <li
                 v-for="(book, index) in cart"
                 :key="index + book.isbn"
-                class="flex justify-between my-3 items-center"
+                class="flex items-center justify-between my-3"
               >
                 <p class="">
                   <span class="truncate">{{ book.title }}</span>
@@ -100,14 +100,14 @@
 
                 <button
                   class="
-                    bg-red-500
-                    hover:red-700
-                    text-white
-                    font-bold
                     p-1
+                    font-bold
+                    text-white
+                    bg-red-500
                     rounded
+                    hover:red-700
                   "
-                  @click="removeBookFromCart(index)"
+                  v-on:click="removeBookFromCart(index)"
                 >
                   x
                 </button>
@@ -124,7 +124,8 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { Book } from "@/types/book.type";
+import { defineComponent, PropType } from "vue";
 
 type CartModalState = {
   cartOpen: boolean;
@@ -134,12 +135,28 @@ export default defineComponent({
   data: (): CartModalState => ({
     cartOpen: false,
   }),
+  props: {
+    cart: {
+      required: true,
+      type: Array as PropType<Book[]>,
+    },
+  },
+  computed: {
+    total(): number {
+      let total = 0;
+      this.cart.forEach((cartItem: Book) => (total += cartItem.price));
+      return total;
+    },
+  },
   methods: {
     openCart() {
       this.cartOpen = true;
     },
     closeCart() {
       this.cartOpen = false;
+    },
+    removeBookFromCart(index: number) {
+      this.$emit("removeBookFromCart", index);
     },
   },
 });

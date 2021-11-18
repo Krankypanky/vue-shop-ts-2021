@@ -1,19 +1,20 @@
 <template>
-  <nav class="relative select-none lg:flex lg:items-stretch w-full bg-gray-800">
+  <nav class="relative w-full bg-gray-800 select-none lg:flex lg:items-stretch">
     <div
       class="
-        flex flex-no-shrink
-        h-12
-        list-none
-        text-white
-        py-3
-        max-w-xl
-        m-auto
-        w-full
+        flex
         items-center
+        w-full
+        h-12
+        max-w-xl
+        py-3
+        m-auto
+        text-white
+        list-none
+        flex-no-shrink
       "
     >
-      <div class="flex justify-content-between w-full items-center">
+      <div class="flex items-center w-full justify-content-between">
         <router-link
           to="/"
           v-if="isLoggedIn"
@@ -60,34 +61,36 @@
       <input
         type="text"
         v-on:input="searchChanged"
-        v-model="searchTerm"
         class="
-          shadow
-          appearance-none
-          border
-          rounded
           w-full
           py-1
           pl-3
-          text-gray-700
           leading-tight
+          text-gray-700
+          border
+          rounded
+          shadow
+          appearance-none
           focus:outline-none focus:shadow-outline
         "
       />
-      <cart-modal :cart="cart"></cart-modal>
+      <cart-modal
+        :cart="cart"
+        v-on:removeBookFromCart="removeBookFromCart"
+      ></cart-modal>
       <button
         class="
-          bg-red-500
-          hover:red-700
-          text-white
-          font-bold
-          py-1
           px-4
-          rounded
+          py-1
           ml-2
+          font-bold
+          text-white
+          bg-red-500
+          rounded
+          hover:red-700
         "
         v-if="isLoggedIn"
-        @click="logout"
+        v-on:click="logout"
       >
         Logout
       </button>
@@ -95,8 +98,9 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import CartModal from "@/components/CartModal.vue";
+import { Book } from "@/types/book.type";
 
 type NavigationState = {
   isLoggedIn: boolean;
@@ -106,9 +110,10 @@ type NavigationState = {
 export default defineComponent({
   components: { CartModal },
   props: {
-    // get cart from props
-    // get method from parent to remove item from cart
-    // add method to prop of CartModal
+    cart: {
+      required: true,
+      type: Array as PropType<Book[]>,
+    },
   },
   data: (): NavigationState => ({
     isLoggedIn: true,
@@ -122,8 +127,9 @@ export default defineComponent({
       const value = (evt?.target as HTMLInputElement).value;
       this.$emit("searchChanged", value);
     },
+    removeBookFromCart(index: number) {
+      this.$emit("removeBookFromCart", index);
+    },
   },
 });
 </script>
-<style lang="ts">
-</style>

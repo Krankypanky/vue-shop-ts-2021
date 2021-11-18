@@ -1,8 +1,26 @@
-import { createStore } from "vuex";
+import { Book } from "@/types/book.type";
+import { AppStore } from "@/types/store.type";
+import { createStore, Store } from "vuex";
 
-export default createStore({
-  state: {},
-  mutations: {},
+const defaultState: AppStore = {
+  books: [],
+  cart: [],
+
+  loading: false,
+  errors: [],
+};
+
+export default createStore<AppStore>({
+  state: defaultState,
+  mutations: {
+    addBooksToStore(currentState, books: Book[]) {
+      currentState.books = books;
+    },
+
+    addBookToCart(currentState, book: Book): void {
+      currentState.books.push(book);
+    },
+  },
   actions: {},
   modules: {},
 });
