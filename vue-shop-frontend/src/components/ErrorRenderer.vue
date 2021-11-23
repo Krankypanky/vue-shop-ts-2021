@@ -7,13 +7,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 
 const ErrorRenderer = defineComponent({
-  props: {
-    errors: {
-      type: Array as PropType<string[]>,
-      required: true,
+  computed: {
+    errors(): string[] {
+      return this.$store.state.errors;
     },
   },
 });

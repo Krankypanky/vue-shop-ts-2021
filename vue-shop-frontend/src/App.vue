@@ -1,6 +1,20 @@
 <template>
+  <navigation></navigation>
+  <loading></loading>
   <router-view />
 </template>
+<script>
+import { defineComponent } from "vue";
+import Navigation from "@/components/Navigation.vue";
+import Loading from "@/components/Loading.vue";
+
+export default defineComponent({
+  components: {
+    Navigation,
+    Loading,
+  },
+});
+</script>
 
 <style lang="scss">
 #app {

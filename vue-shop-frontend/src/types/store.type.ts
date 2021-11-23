@@ -6,4 +6,6 @@ export interface AppStore {
 
   loading: boolean;
   errors: string[];
+
+  searchTerm: string;
 }

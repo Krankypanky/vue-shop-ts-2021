@@ -1,31 +1,12 @@
 <template>
   <div>
     <button
-      class="
-        relative
-        px-4
-        py-1
-        mx-4
-        font-bold
-        text-white
-        bg-green-500
-        rounded
-        hover:red-700
-      "
+      class="relative px-4 py-1 mx-4 font-bold text-white bg-green-500 rounded  hover:red-700"
       v-on:click="openCart"
     >
       Warenkorb
       <span
-        class="
-          absolute
-          px-1
-          text-xs
-          bg-blue-400
-          border-black
-          rounded-full
-          -right-2
-          -top-2
-        "
+        class="absolute px-1 text-xs bg-blue-400 border-black rounded-full  -right-2 -top-2"
         >{{ cart?.length ?? 0 }}</span
       >
     </button>
@@ -37,17 +18,7 @@
       v-if="cartOpen"
     >
       <div
-        class="
-          flex
-          items-end
-          justify-center
-          min-h-screen
-          px-4
-          pt-4
-          pb-20
-          text-center
-          sm:block sm:p-0
-        "
+        class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center  sm:block sm:p-0"
       >
         <div
           class="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75"
@@ -60,19 +31,7 @@
         >
 
         <div
-          class="
-            relative
-            inline-block
-            overflow-hidden
-            text-left
-            align-bottom
-            transition-all
-            transform
-            bg-white
-            rounded-sm
-            shadow-xl
-            sm:my-8 sm:align-middle sm:max-w-lg sm:w-full
-          "
+          class="relative inline-block overflow-hidden text-left align-bottom transition-all transform bg-white rounded-sm shadow-xl  sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
         >
           <button
             class="absolute top-0 p-2 text-black right-2"
@@ -99,14 +58,7 @@
                 </p>
 
                 <button
-                  class="
-                    p-1
-                    font-bold
-                    text-white
-                    bg-red-500
-                    rounded
-                    hover:red-700
-                  "
+                  class="p-1 font-bold text-white bg-red-500 rounded  hover:red-700"
                   v-on:click="removeBookFromCart(index)"
                 >
                   x
@@ -135,17 +87,14 @@ export default defineComponent({
   data: (): CartModalState => ({
     cartOpen: false,
   }),
-  props: {
-    cart: {
-      required: true,
-      type: Array as PropType<Book[]>,
-    },
-  },
   computed: {
     total(): number {
       let total = 0;
       this.cart.forEach((cartItem: Book) => (total += cartItem.price));
       return total;
+    },
+    cart() {
+      return this.$store.state.cart;
     },
   },
   methods: {
@@ -156,7 +105,7 @@ export default defineComponent({
       this.cartOpen = false;
     },
     removeBookFromCart(index: number) {
-      this.$emit("removeBookFromCart", index);
+      this.$store.commit("removeBookFromCart", index);
     },
   },
 });

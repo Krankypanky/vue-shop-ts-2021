@@ -7,6 +7,16 @@ const routes: Array<RouteRecordRaw> = [
     name: "BookListing",
     component: BookListing,
   },
+  {
+    path: "/login",
+    name: "Login",
+    component: BookListing,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: BookListing,
+  },
 ];
 
 const router = createRouter({

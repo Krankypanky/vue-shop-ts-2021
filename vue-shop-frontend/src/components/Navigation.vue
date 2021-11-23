@@ -74,10 +74,7 @@
           focus:outline-none focus:shadow-outline
         "
       />
-      <cart-modal
-        :cart="cart"
-        v-on:removeBookFromCart="removeBookFromCart"
-      ></cart-modal>
+      <cart-modal></cart-modal>
       <button
         class="
           px-4
@@ -98,26 +95,17 @@
   </nav>
 </template>
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 import CartModal from "@/components/CartModal.vue";
-import { Book } from "@/types/book.type";
 
 type NavigationState = {
   isLoggedIn: boolean;
-  searchTerm: string;
 };
 
 export default defineComponent({
   components: { CartModal },
-  props: {
-    cart: {
-      required: true,
-      type: Array as PropType<Book[]>,
-    },
-  },
   data: (): NavigationState => ({
     isLoggedIn: true,
-    searchTerm: "",
   }),
   methods: {
     logout() {
@@ -125,10 +113,7 @@ export default defineComponent({
     },
     searchChanged(evt: Event) {
       const value = (evt?.target as HTMLInputElement).value;
-      this.$emit("searchChanged", value);
-    },
-    removeBookFromCart(index: number) {
-      this.$emit("removeBookFromCart", index);
+      this.$store.commit("setSearchTerm", value);
     },
   },
 });
